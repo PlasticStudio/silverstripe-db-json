@@ -1,14 +1,14 @@
 <?php
 namespace ArchiPro\Silverstripe\DbJson;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataObjectSchema;
 
 
 /**
  * Automatically add accessor and mutator methods for all DBJSON fields to all DataObjects.
  */
-class JsonDataExtension extends DataExtension
+class JsonDataExtension extends Extension
 {
 
     /**
