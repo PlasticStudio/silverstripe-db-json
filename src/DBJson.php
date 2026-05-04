@@ -9,28 +9,41 @@ use SilverStripe\ORM\FieldType\DBField;
  */
 class DBJson extends DBField
 {
-    public function setValue($value, $record = null, $markChanged = true)
+    public function setValue(mixed $value, $record = null, bool $markChanged = true): static
     {
         if (is_string($value)) {
-            $value = json_decode($value, true);
+            $decoded = json_decode($value, true);
+
+            // only replace if valid JSON
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $value = $decoded;
+            }
         }
 
         return parent::setValue($value, $record, $markChanged);
     }
 
-    public function getValue($parse = true)
+    public function getValue(): mixed
     {
-        $value = parent::getValue($parse);
+        $value = parent::getValue();
 
         if (is_string($value)) {
-            return json_decode($value, true);
+            $decoded = json_decode($value, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decoded;
+            }
         }
 
         return $value;
     }
 
-    public function prepValueForDB($value)
+    public function prepValueForDB($value): string
     {
-        return json_encode($value);
+        if (is_array($value) || is_object($value)) {
+            return json_encode($value);
+        }
+
+        return (string) $value;
     }
 }
