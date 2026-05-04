@@ -10,7 +10,7 @@ use SilverStripe\ORM\FieldType\DBField;
 class DBJson extends DBField
 {
 
-    public function requireField()
+    public function requireField():  void
     {
         $parts = [
             'datatype'   => 'json',
