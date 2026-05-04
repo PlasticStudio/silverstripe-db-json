@@ -9,41 +9,15 @@ use SilverStripe\ORM\FieldType\DBField;
  */
 class DBJson extends DBField
 {
-    public function setValue(mixed $value, $record = null, bool $markChanged = true): static
+
+    public function requireField()
     {
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
+        $parts = [
+            'datatype'   => 'json',
+            'null'       => 'not null',
+        ];
 
-            // only replace if valid JSON
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $value = $decoded;
-            }
-        }
-
-        return parent::setValue($value, $record, $markChanged);
-    }
-
-    public function getValue(): mixed
-    {
-        $value = parent::getValue();
-
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $decoded;
-            }
-        }
-
-        return $value;
-    }
-
-    public function prepValueForDB($value): string
-    {
-        if (is_array($value) || is_object($value)) {
-            return json_encode($value);
-        }
-
-        return (string) $value;
+        $values = ['type' => 'json', 'parts' => $parts];
+        DB::require_field($this->tableName, $this->name, $values);
     }
 }
